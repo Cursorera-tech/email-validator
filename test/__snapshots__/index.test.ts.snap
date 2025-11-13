@@ -1,0 +1,268 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`validation tests fails later with malformed regex 1`] = `
+Object {
+  "reason": "smtp",
+  "valid": false,
+  "validators": Object {
+    "disposable": Object {
+      "valid": true,
+    },
+    "mx": Object {
+      "valid": true,
+    },
+    "regex": Object {
+      "valid": true,
+    },
+    "smtp": Object {
+      "reason": "SMTP Error: The mail address that you specified was not syntactically correct.",
+      "valid": false,
+    },
+    "typo": Object {
+      "valid": true,
+    },
+  },
+}
+`;
+
+exports[`validation tests fails with bad dns 1`] = `
+Object {
+  "reason": "mx",
+  "valid": false,
+  "validators": Object {
+    "disposable": Object {
+      "valid": true,
+    },
+    "mx": Object {
+      "reason": "MX record not found",
+      "valid": false,
+    },
+    "regex": Object {
+      "valid": true,
+    },
+    "smtp": Object {
+      "valid": false,
+    },
+    "typo": Object {
+      "valid": true,
+    },
+  },
+}
+`;
+
+exports[`validation tests fails with bad mailbox 1`] = `
+Object {
+  "reason": "smtp",
+  "valid": false,
+  "validators": Object {
+    "disposable": Object {
+      "valid": true,
+    },
+    "mx": Object {
+      "valid": true,
+    },
+    "regex": Object {
+      "valid": true,
+    },
+    "smtp": Object {
+      "reason": "Mailbox not found.",
+      "valid": false,
+    },
+    "typo": Object {
+      "valid": true,
+    },
+  },
+}
+`;
+
+exports[`validation tests fails with bad regex 1`] = `
+Object {
+  "reason": "regex",
+  "valid": false,
+  "validators": Object {
+    "disposable": Object {
+      "valid": false,
+    },
+    "mx": Object {
+      "valid": false,
+    },
+    "regex": Object {
+      "reason": "Email does not contain \\"@\\".",
+      "valid": false,
+    },
+    "smtp": Object {
+      "valid": false,
+    },
+    "typo": Object {
+      "valid": false,
+    },
+  },
+}
+`;
+
+exports[`validation tests fails with common typo 1`] = `
+Object {
+  "reason": "typo",
+  "valid": false,
+  "validators": Object {
+    "disposable": Object {
+      "valid": false,
+    },
+    "mx": Object {
+      "valid": false,
+    },
+    "regex": Object {
+      "valid": true,
+    },
+    "smtp": Object {
+      "valid": false,
+    },
+    "typo": Object {
+      "reason": "Likely typo, suggested email: david@gmail.com",
+      "valid": false,
+    },
+  },
+}
+`;
+
+exports[`validation tests fails with disposable email 1`] = `
+Object {
+  "reason": "disposable",
+  "valid": false,
+  "validators": Object {
+    "disposable": Object {
+      "reason": "Email was created using a disposable email service",
+      "valid": false,
+    },
+    "mx": Object {
+      "valid": false,
+    },
+    "regex": Object {
+      "valid": true,
+    },
+    "smtp": Object {
+      "valid": false,
+    },
+    "typo": Object {
+      "valid": true,
+    },
+  },
+}
+`;
+
+exports[`validation tests fails without sending data 1`] = `
+Object {
+  "reason": "smtp",
+  "valid": false,
+  "validators": Object {
+    "disposable": Object {
+      "valid": true,
+    },
+    "mx": Object {
+      "valid": true,
+    },
+    "regex": Object {
+      "valid": true,
+    },
+    "smtp": Object {
+      "reason": "Mail server closed connection without sending any data.",
+      "valid": false,
+    },
+    "typo": Object {
+      "valid": true,
+    },
+  },
+}
+`;
+
+exports[`validation tests passes when valid special char 1`] = `
+Object {
+  "valid": true,
+  "validators": Object {
+    "disposable": Object {
+      "valid": true,
+    },
+    "mx": Object {
+      "valid": true,
+    },
+    "regex": Object {
+      "valid": true,
+    },
+    "smtp": Object {
+      "valid": true,
+    },
+    "typo": Object {
+      "valid": true,
+    },
+  },
+}
+`;
+
+exports[`validation tests passes when valid wildcard 1`] = `
+Object {
+  "valid": true,
+  "validators": Object {
+    "disposable": Object {
+      "valid": true,
+    },
+    "mx": Object {
+      "valid": true,
+    },
+    "regex": Object {
+      "valid": true,
+    },
+    "smtp": Object {
+      "valid": true,
+    },
+    "typo": Object {
+      "valid": true,
+    },
+  },
+}
+`;
+
+exports[`validation tests passes when we skip smtp validation 1`] = `
+Object {
+  "valid": true,
+  "validators": Object {
+    "disposable": Object {
+      "valid": true,
+    },
+    "mx": Object {
+      "valid": true,
+    },
+    "regex": Object {
+      "valid": true,
+    },
+    "smtp": Object {
+      "valid": true,
+    },
+    "typo": Object {
+      "valid": true,
+    },
+  },
+}
+`;
+
+exports[`validation tests passes with custom TLD 1`] = `
+Object {
+  "valid": true,
+  "validators": Object {
+    "disposable": Object {
+      "valid": true,
+    },
+    "mx": Object {
+      "valid": true,
+    },
+    "regex": Object {
+      "valid": true,
+    },
+    "smtp": Object {
+      "valid": true,
+    },
+    "typo": Object {
+      "valid": true,
+    },
+  },
+}
+`;

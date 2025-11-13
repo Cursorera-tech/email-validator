@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Validator - XLSX Upload</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .main-wrapper {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: calc(100vh - 40px);
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            flex: 0 0 500px;
+            overflow-y: auto;
+        }
+
+        .side-panel {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .side-panel-header {
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 15px;
+        }
+
+        .side-panel-header h2 {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .side-panel-stats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .side-panel-stat {
+            flex: 1;
+            padding: 10px;
+            background: #f8f9ff;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .side-panel-stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .side-panel-stat-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .email-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .email-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            background: #f8f9ff;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .email-item.valid {
+            border-left-color: #28a745;
+            background: #f0fff4;
+        }
+
+        .email-item.invalid {
+            border-left-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .email-item.validating {
+            border-left-color: #ffc107;
+            background: #fffbf0;
+        }
+
+        .email-address {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .email-status {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .email-reason {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-wrapper {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .container {
+                flex: 1;
+            }
+
+            .side-panel {
+                max-height: 400px;
+            }
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input[type="file"],
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="file"]:focus,
+        input[type="text"]:focus,
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            background: #f8f9ff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-label:hover {
+            background: #f0f2ff;
+            border-color: #764ba2;
+        }
+
+        input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 8px;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .download-btn {
+            margin-top: 15px;
+            background: #28a745;
+        }
+
+        .download-btn:hover:not(:disabled) {
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .error {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #fee;
+            border: 1px solid #fcc;
+            border-radius: 8px;
+            color: #c33;
+        }
+
+        .error.active {
+            display: block;
+        }
+
+        .help-text {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <div class="container">
+        <h1>📧 Email Validator</h1>
+        <p class="subtitle">Upload an XLSX file to validate email addresses</p>
+
+        <form id="uploadForm">
+            <div class="form-group">
+                <label for="file">Select XLSX File</label>
+                <div class="file-input-wrapper">
+                    <label class="file-input-label" for="file">
+                        <span>📁 Click to browse or drag and drop</span>
+                    </label>
+                    <input type="file" id="file" name="file" accept=".xlsx,.xls" required>
+                </div>
+                <div class="file-name" id="fileName"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="emailColumn">Email Column Name</label>
+                <input type="text" id="emailColumn" name="emailColumn" value="email" placeholder="email">
+                <div class="help-text">The name of the column containing email addresses (default: "email")</div>
+            </div>
+
+            <div class="form-group">
+                <label for="senderEmail">Sender Email (Optional)</label>
+                <input type="email" id="senderEmail" name="senderEmail" placeholder="sender@example.com">
+                <div class="help-text">Email address to use as sender for SMTP validation</div>
+            </div>
+
+            <button type="submit" id="submitBtn">Validate Emails</button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Validating emails... This may take a few minutes.</p>
+        </div>
+
+        <div class="error" id="error"></div>
+
+        <div class="results" id="results">
+            <h2>Validation Results</h2>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalCount">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="validCount">0</div>
+                    <div class="stat-label">Valid</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="invalidCount">0</div>
+                    <div class="stat-label">Invalid</div>
+                </div>
+            </div>
+            <a id="downloadLink" href="#" download>
+                <button class="download-btn">Download Results</button>
+            </a>
+        </div>
+        </div>
+
+        <div class="side-panel" id="sidePanel">
+            <div class="side-panel-header">
+                <h2>📋 Validation Progress</h2>
+                <div class="side-panel-stats">
+                    <div class="side-panel-stat">
+                        <div class="side-panel-stat-value" id="sideTotalCount">0</div>
+                        <div class="side-panel-stat-label">Total</div>
+                    </div>
+                    <div class="side-panel-stat">
+                        <div class="side-panel-stat-value" id="sideValidCount" style="color: #28a745;">0</div>
+                        <div class="side-panel-stat-label">Valid</div>
+                    </div>
+                    <div class="side-panel-stat">
+                        <div class="side-panel-stat-value" id="sideInvalidCount" style="color: #dc3545;">0</div>
+                        <div class="side-panel-stat-label">Invalid</div>
+                    </div>
+                </div>
+            </div>
+            <div class="email-list" id="emailList">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📧</div>
+                    <p>No emails validated yet</p>
+                    <p style="font-size: 0.9em; margin-top: 5px;">Upload a file to start validation</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('file');
+        const fileName = document.getElementById('fileName');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const error = document.getElementById('error');
+        const totalCount = document.getElementById('totalCount');
+        const validCount = document.getElementById('validCount');
+        const invalidCount = document.getElementById('invalidCount');
+        const downloadLink = document.getElementById('downloadLink');
+        const sideTotalCount = document.getElementById('sideTotalCount');
+        const sideValidCount = document.getElementById('sideValidCount');
+        const sideInvalidCount = document.getElementById('sideInvalidCount');
+        const emailList = document.getElementById('emailList');
+        let eventSource = null;
+        let emailResults = [];
+
+        // Update file name display
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                fileName.textContent = `Selected: ${file.name}`;
+            } else {
+                fileName.textContent = '';
+            }
+        });
+
+        // Handle form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showError('Please select a file');
+                return;
+            }
+
+            // Reset UI
+            hideError();
+            hideResults();
+            showLoading();
+            submitBtn.disabled = true;
+            emailResults = [];
+            clearEmailList();
+            updateSidePanelStats(0, 0, 0);
+
+            // Close existing event source if any
+            if (eventSource) {
+                eventSource.close();
+            }
+
+            try {
+                // Start SSE connection for real-time updates
+                const sessionId = Date.now().toString();
+                let sseConnected = false;
+                
+                eventSource = new EventSource(`/api/validate-emails-stream?session=${sessionId}`);
+
+                eventSource.onopen = () => {
+                    console.log('SSE connection opened');
+                    // Connection is open, consider it connected
+                    sseConnected = true;
+                };
+
+                eventSource.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        console.log('SSE message received:', data);
+                        
+                        if (data.type === 'connected') {
+                            console.log('SSE connected, session:', data.sessionId);
+                            sseConnected = true;
+                        } else if (data.type === 'start') {
+                            // Initialize with total count
+                            console.log('Validation started, total emails:', data.total);
+                            updateSidePanelStats(data.total, 0, 0);
+                        } else if (data.type === 'email') {
+                            addEmailToSidePanel(data.email, data.valid, data.reason);
+                            emailResults.push(data);
+                            updateSidePanelStats();
+                        } else if (data.type === 'complete') {
+                            // Final results
+                            console.log('Validation complete:', data.stats);
+                            totalCount.textContent = data.stats.total;
+                            validCount.textContent = data.stats.valid;
+                            invalidCount.textContent = data.stats.invalid;
+                            downloadLink.href = data.downloadUrl;
+                            downloadLink.download = data.filename;
+                            
+                            hideLoading();
+                            showResults();
+                            eventSource.close();
+                            submitBtn.disabled = false;
+                        } else if (data.type === 'error') {
+                            console.error('SSE error:', data.message);
+                            showError(data.message || 'An error occurred while validating emails');
+                            hideLoading();
+                            eventSource.close();
+                            submitBtn.disabled = false;
+                        }
+                    } catch (err) {
+                        console.error('Error parsing SSE message:', err, event.data);
+                    }
+                };
+
+                eventSource.onerror = (err) => {
+                    console.error('SSE connection error:', err);
+                    // Don't close immediately, EventSource will try to reconnect
+                };
+
+                // Wait for SSE connection to be established (max 2 seconds)
+                let waitCount = 0;
+                while (!sseConnected && waitCount < 20) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    waitCount++;
+                }
+
+                if (!sseConnected) {
+                    console.warn('SSE connection not established, proceeding anyway');
+                }
+
+                // Submit the form with session ID
+                formData.append('sessionId', sessionId);
+                const response = await fetch('/api/validate-emails', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    if (eventSource) eventSource.close();
+                    throw new Error(data.message || data.error || 'Failed to validate emails');
+                }
+
+                // If SSE didn't send complete event, handle it here
+                if (!data.complete) {
+                    totalCount.textContent = data.stats.total;
+                    validCount.textContent = data.stats.valid;
+                    invalidCount.textContent = data.stats.invalid;
+                    downloadLink.href = data.downloadUrl;
+                    downloadLink.download = data.filename;
+                    
+                    hideLoading();
+                    showResults();
+                    if (eventSource) eventSource.close();
+                    submitBtn.disabled = false;
+                }
+            } catch (err) {
+                if (eventSource) eventSource.close();
+                showError(err.message || 'An error occurred while validating emails');
+                hideLoading();
+                submitBtn.disabled = false;
+            }
+        });
+
+        function addEmailToSidePanel(email, valid, reason) {
+            // Remove empty state if present
+            const emptyState = emailList.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+            const emailItem = document.createElement('div');
+            emailItem.className = `email-item ${valid ? 'valid' : 'invalid'}`;
+            
+            const emailAddress = document.createElement('div');
+            emailAddress.className = 'email-address';
+            emailAddress.textContent = email;
+            
+            const emailStatus = document.createElement('div');
+            emailStatus.className = 'email-status';
+            emailStatus.textContent = valid ? '✅ Valid' : '❌ Invalid';
+            
+            emailItem.appendChild(emailAddress);
+            emailItem.appendChild(emailStatus);
+            
+            if (reason) {
+                const emailReason = document.createElement('div');
+                emailReason.className = 'email-reason';
+                emailReason.textContent = reason;
+                emailItem.appendChild(emailReason);
+            }
+            
+            emailList.insertBefore(emailItem, emailList.firstChild);
+            
+            // Auto-scroll to top to show latest
+            emailList.scrollTop = 0;
+        }
+
+        function clearEmailList() {
+            emailList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📧</div><p>No emails validated yet</p><p style="font-size: 0.9em; margin-top: 5px;">Upload a file to start validation</p></div>';
+        }
+
+        function updateSidePanelStats(total, valid, invalid) {
+            if (arguments.length === 0) {
+                // Calculate from emailResults
+                total = emailResults.length;
+                valid = emailResults.filter(e => e.valid).length;
+                invalid = emailResults.filter(e => !e.valid).length;
+            }
+            
+            sideTotalCount.textContent = total;
+            sideValidCount.textContent = valid;
+            sideInvalidCount.textContent = invalid;
+        }
+
+        function showLoading() {
+            loading.classList.add('active');
+        }
+
+        function hideLoading() {
+            loading.classList.remove('active');
+        }
+
+        function showResults() {
+            results.classList.add('active');
+        }
+
+        function hideResults() {
+            results.classList.remove('active');
+        }
+
+        function showError(message) {
+            error.textContent = message;
+            error.classList.add('active');
+        }
+
+        function hideError() {
+            error.classList.remove('active');
+        }
+    </script>
+</body>
+</html>
+
+
