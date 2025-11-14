@@ -9,8 +9,7 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "baseUrl": "..",
-    "outDir": "../dist/api",
-    "types": ["node"]
+    "outDir": "../dist/api"
   },
   "include": [
     "./**/*"
