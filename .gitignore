@@ -37,7 +37,4 @@ Thumbs.db
 # Ignore built ts files
 dist/**/*
 
-# Upload and output directories
-uploads/
-output/
 
