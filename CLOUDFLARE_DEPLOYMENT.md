@@ -107,9 +107,33 @@ npx wrangler pages deploy dist
 
 ### Build Errors
 
+#### TypeScript Module Resolution Errors
+
+If you see errors like `Cannot find module '../src/output/output'`:
+
+1. **Verify local build works**:
+   ```bash
+   npm install
+   npm run build
+   ```
+
+2. **Check TypeScript version**: Ensure `typescript` is in `devDependencies` (currently `^5.9.3`)
+
+3. **Verify module resolution**: The `tsconfig.json` should have:
+   - `"moduleResolution": "node"`
+   - `"baseUrl": "."`
+   - `"typeRoots": ["./node_modules/@types"]`
+
+4. **Clear Cloudflare cache**: In Cloudflare Pages dashboard, try clearing the build cache and redeploying
+
+5. **Check file paths**: Ensure all files exist and paths are correct (case-sensitive)
+
+#### Other Build Issues
+
 - Ensure `@types/node` is installed
 - Check that all dependencies are in `package.json`
 - Verify TypeScript compilation succeeds locally
+- Check Cloudflare build logs for specific error messages
 
 ### Function Not Found
 
