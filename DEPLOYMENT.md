@@ -6,15 +6,14 @@ The 405 "Method Not Allowed" error was caused by the Express server not being co
 
 ### Changes Made:
 
-1. **Created Vercel-compatible API routes** in the `api/` directory:
-   - `api/validate-emails.ts` - Handles POST requests for email validation
-   - `api/download/[filename].ts` - Handles file downloads
-   - `api/health.ts` - Health check endpoint
+1. **Created serverless function wrapper** at `api/index.ts`:
+   - Forwards all requests to the Express app
+   - Proper integration with Vercel's serverless architecture
 
 2. **Updated `vercel.json`** with proper configuration:
    - Set 300-second timeout for long-running validation tasks
    - Allocated 3GB memory for processing large files
-   - Configured proper rewrites for static files
+   - Removed catch-all rewrite that was causing 405 errors
 
 3. **Added TypeScript configuration** for API routes:
    - Created `api/tsconfig.json` for proper compilation
@@ -83,10 +82,17 @@ After deployment, test these endpoints:
 
 1. **Health Check**
    ```bash
-   curl https://your-app.vercel.app/api/health
+   curl https://your-app.vercel.app/health
    ```
 
-2. **File Upload** (use the web interface)
+2. **API Validation Endpoint**
+   ```bash
+   curl -X POST https://your-app.vercel.app/api/validate-emails \
+     -F "file=@your-file.xlsx" \
+     -F "emailColumn=email"
+   ```
+
+3. **File Upload via Web Interface**
    - Go to: `https://your-app.vercel.app/`
    - Upload an XLSX file
    - Wait for validation to complete
