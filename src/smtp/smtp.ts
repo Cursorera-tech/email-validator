@@ -1,5 +1,5 @@
 import net from 'net'
-import { OutputFormat, createOutput } from '../output'
+import { OutputFormat, createOutput } from '../output/output'
 import { hasCode, ErrorCodes } from './errorCodes'
 
 const log = (...args: unknown[]) => {

@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx'
 import { validate } from '../src/index'
-import { OutputFormat } from '../src/output'
+import { OutputFormat } from '../src/output/output'
 
 export interface EmailRow {
   email: string

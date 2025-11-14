@@ -299,20 +299,15 @@ app.get('/api/download/:filename', (req: Request, res: Response) => {
   })
 })
 
-// Start server (only for local development)
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log('\n' + '═'.repeat(60))
-    console.log('🚀 EMAIL VALIDATOR SERVER STARTED')
-    console.log('═'.repeat(60))
-    console.log(`📍 Server running on http://localhost:${PORT}`)
-    console.log(`🌐 Web interface: http://localhost:${PORT}`)
-    console.log(`📤 Upload endpoint: http://localhost:${PORT}/api/validate-emails`)
-    console.log(`💚 Health check: http://localhost:${PORT}/health`)
-    console.log('═'.repeat(60) + '\n')
-  })
-}
-
-// Export for Vercel serverless
-export default app
+// Start server
+app.listen(PORT, () => {
+  console.log('\n' + '═'.repeat(60))
+  console.log('🚀 EMAIL VALIDATOR SERVER STARTED')
+  console.log('═'.repeat(60))
+  console.log(`📍 Server running on http://localhost:${PORT}`)
+  console.log(`🌐 Web interface: http://localhost:${PORT}`)
+  console.log(`📤 Upload endpoint: http://localhost:${PORT}/api/validate-emails`)
+  console.log(`💚 Health check: http://localhost:${PORT}/health`)
+  console.log('═'.repeat(60) + '\n')
+})
 
