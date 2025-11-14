@@ -1,0 +1,13 @@
+node_modules
+uploads
+output
+test
+.git
+*.test.ts
+*.test.js
+__snapshots__
+.env.local
+.env*.local
+yarn.lock
+package-lock.json
+
