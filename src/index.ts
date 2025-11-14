@@ -4,7 +4,7 @@ import { getBestMx } from './dns/dns'
 import { checkSMTP } from './smtp/smtp'
 import { checkDisposable } from './disposable/disposable'
 import { getOptions, ValidatorOptions } from './options/options'
-import { OutputFormat, createOutput } from './output/output'
+import { OutputFormat, createOutput } from './output'
 import './types'
 
 export async function validate(emailOrOptions: string | ValidatorOptions): Promise<OutputFormat> {
