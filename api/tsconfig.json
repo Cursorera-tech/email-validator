@@ -2,13 +2,15 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2017",
+    "target": "ES2020",
+    "lib": ["ES2020"],
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "baseUrl": "..",
-    "outDir": "../dist/api"
+    "outDir": "../dist/api",
+    "types": ["node"]
   },
   "include": [
     "./**/*"
