@@ -6,7 +6,7 @@ In your Cloudflare Pages dashboard, set the following:
 
 ### Build Settings
 
-- **Build command**: `npm install && npm run build`
+- **Build command**: `npm run build`
 - **Deploy command**: `npx wrangler pages deploy dist`
 - **Non-production branch deploy command**: `npx wrangler pages deploy dist --branch=$CF_PAGES_BRANCH`
 - **Path**: `/` (root)
