@@ -1,16 +1,17 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
-    }
-  ],
   "functions": {
     "api/**/*.ts": {
-      "maxDuration": 300
+      "maxDuration": 300,
+      "memory": 3008
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/public/$1"
+    }
+  ]
 }
 
