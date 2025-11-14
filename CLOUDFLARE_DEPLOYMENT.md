@@ -6,10 +6,17 @@ In your Cloudflare Pages dashboard, set the following:
 
 ### Build Settings
 
-- **Build command**: `npm run build`
+- **Build command**: `npm install && npm run build`
 - **Deploy command**: `npx wrangler pages deploy dist`
-- **Non-production branch deploy command**: `npx wrangler pages deploy dist --branch=<branch-name>`
+- **Non-production branch deploy command**: `npx wrangler pages deploy dist --branch=$CF_PAGES_BRANCH`
 - **Path**: `/` (root)
+
+### Package Manager
+
+⚠️ **Important**: This project uses **npm**, not yarn. Make sure:
+- `yarn.lock` is **not** in the repository (it has been removed)
+- `package-lock.json` **is** present and committed
+- Cloudflare will auto-detect npm when only `package-lock.json` exists
 
 ### Environment Variables (if needed)
 

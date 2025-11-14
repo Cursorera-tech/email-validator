@@ -9,5 +9,4 @@ __snapshots__
 .env.local
 .env*.local
 yarn.lock
-package-lock.json
 
