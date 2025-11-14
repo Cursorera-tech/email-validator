@@ -48,7 +48,7 @@ const upload = multer({
     }
   },
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
+    fileSize: 100 * 1024 * 1024, // 100MB limit (increased from 10MB)
   },
 })
 
@@ -116,7 +116,24 @@ function sendSSEMessage(sessionId: string, data: any) {
 // File upload and validation endpoint
 app.post(
   '/api/validate-emails',
-  upload.single('file'),
+  (req: MulterRequest, res: Response, next: any) => {
+    upload.single('file')(req, res, (err: any) => {
+      if (err) {
+        console.error('Multer error:', err)
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return (res as any).status(400).json({ 
+            error: 'File too large', 
+            message: 'File size exceeds the maximum limit of 100MB. Please use a smaller file.' 
+          })
+        }
+        return (res as any).status(400).json({ 
+          error: 'File upload error', 
+          message: err.message || 'Failed to upload file' 
+        })
+      }
+      next()
+    })
+  },
   async (req: MulterRequest, res: Response) => {
     const startTime = Date.now()
     
